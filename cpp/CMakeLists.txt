@@ -171,7 +171,13 @@ target_link_libraries(foxglove_cpp_shared PUBLIC foxglove_cpp_obj)
 target_link_libraries(foxglove_cpp_shared PRIVATE foxglove-shared)
 
 
+### test docs and examples options
+option(BUILD_FOXGLOVE_CPP_TESTS "Build foxglove-sdk C++ tests" OFF)
+option(BUILD_FOXGLOVE_CPP_DOCS "Build foxglove-sdk C++ docs" OFF)
+option(BUILD_FOXGLOVE_CPP_EXAMPLES "Build foxglove-sdk C++ examples" OFF)
+
 ### Tests
+if(BUILD_FOXGLOVE_CPP_TESTS)
 
 file(GLOB_RECURSE foxglove_test_srcs CONFIGURE_DEPENDS
     "foxglove/tests/*.hpp"
@@ -193,7 +199,10 @@ if(MSVC)
   target_compile_options(tests PRIVATE /Zc:__cplusplus)
 endif()
 
+endif() # BUILD_FOXGLOVE_CPP_TESTS
+
 ### Docs
+if(BUILD_FOXGLOVE_CPP_DOCS)
 
 add_custom_target(doxygen
   COMMAND doxygen Doxyfile
@@ -205,7 +214,10 @@ add_custom_target(html-docs
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/foxglove/docs
 )
 
+endif() # BUILD_FOXGLOVE_CPP_DOCS
+
 ### Examples
+if(BUILD_FOXGLOVE_CPP_EXAMPLES)
 
 add_executable(example_server examples/ws-server/src/main.cpp)
 set_property(TARGET example_server PROPERTY CXX_STANDARD 17)
@@ -296,3 +308,4 @@ if(BUILD_DATA_PROVIDER_EXAMPLE)
   target_link_options(example_data_provider PUBLIC ${SANITIZER_LINK_OPTIONS})
   target_link_libraries(example_data_provider foxglove_cpp_static httplib::httplib base64 date::date)
 endif()
+endif() # BUILD_FOXGLOVE_CPP_EXAMPLES
