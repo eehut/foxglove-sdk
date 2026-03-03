@@ -132,7 +132,7 @@ TEST_CASE("different contexts") {
   REQUIRE(channel_result.has_value());
   auto channel = std::move(channel_result.value());
   std::string data = "Hello, world!";
-  channel.log(reinterpret_cast<const std::byte*>(data.data()), data.size());
+  channel.log(reinterpret_cast<const unsigned char*>(data.data()), data.size());
 
   writer->close();
 
@@ -162,7 +162,7 @@ TEST_CASE("specify profile") {
   REQUIRE(channel_result.has_value());
   auto& channel = channel_result.value();
   std::string data = "Hello, world!";
-  channel.log(reinterpret_cast<const std::byte*>(data.data()), data.size());
+  channel.log(reinterpret_cast<const unsigned char*>(data.data()), data.size());
 
   writer->close();
 
@@ -194,7 +194,7 @@ TEST_CASE("zstd compression") {
   REQUIRE(channel_result.has_value());
   auto channel = std::move(channel_result.value());
   std::string data = "Hello, world!";
-  channel.log(reinterpret_cast<const std::byte*>(data.data()), data.size());
+  channel.log(reinterpret_cast<const unsigned char*>(data.data()), data.size());
 
   writer->close();
 
@@ -226,7 +226,7 @@ TEST_CASE("lz4 compression") {
   REQUIRE(channel_result.has_value());
   auto& channel = channel_result.value();
   std::string data = "Hello, world!";
-  channel.log(reinterpret_cast<const std::byte*>(data.data()), data.size());
+  channel.log(reinterpret_cast<const unsigned char*>(data.data()), data.size());
 
   auto error = writer->close();
   REQUIRE(error == foxglove::FoxgloveError::Ok);
@@ -256,7 +256,7 @@ TEST_CASE("Channel can outlive Schema") {
     schema.name = "ExampleSchema";
     schema.encoding = "unknown";
     std::string data = "FAKESCHEMA";
-    schema.data = reinterpret_cast<const std::byte*>(data.data());
+    schema.data = reinterpret_cast<const unsigned char*>(data.data());
     schema.data_len = data.size();
     auto result = foxglove::RawChannel::create("example", "json", schema, context);
     REQUIRE(result.has_value());
@@ -268,7 +268,7 @@ TEST_CASE("Channel can outlive Schema") {
   }
 
   const std::array<uint8_t, 3> data = {4, 5, 6};
-  channel->log(reinterpret_cast<const std::byte*>(data.data()), data.size());
+  channel->log(reinterpret_cast<const unsigned char*>(data.data()), data.size());
 
   writer->close();
 
@@ -467,14 +467,14 @@ TEST_CASE("MCAP Channel filtering") {
     REQUIRE(result.has_value());
     auto channel = std::move(result.value());
     std::string data = "Topic 1 msg";
-    channel.log(reinterpret_cast<const std::byte*>(data.data()), data.size());
+    channel.log(reinterpret_cast<const unsigned char*>(data.data()), data.size());
   }
   {
     foxglove::Schema topic2Schema;
     topic2Schema.name = "Topic2Schema";
     topic2Schema.encoding = "fake-encoding";
     std::string schemaData = "FAKESCHEMA";
-    topic2Schema.data = reinterpret_cast<const std::byte*>(schemaData.data());
+    topic2Schema.data = reinterpret_cast<const unsigned char*>(schemaData.data());
     topic2Schema.data_len = schemaData.size();
 
     std::map<std::string, std::string> metadata = {{"key1", "value1"}, {"key2", "value2"}};
@@ -484,7 +484,7 @@ TEST_CASE("MCAP Channel filtering") {
     REQUIRE(result.has_value());
     auto channel = std::move(result.value());
     std::string data = "Topic 2 msg";
-    channel.log(reinterpret_cast<const std::byte*>(data.data()), data.size());
+    channel.log(reinterpret_cast<const unsigned char*>(data.data()), data.size());
   }
 
   writer_1.close();
@@ -650,7 +650,7 @@ TEST_CASE("Write single attachment to MCAP") {
   attachment.create_time = 900000000;
   attachment.name = "config.json";
   attachment.media_type = "application/json";
-  attachment.data = reinterpret_cast<const std::byte*>(attachment_data.data());
+  attachment.data = reinterpret_cast<const unsigned char*>(attachment_data.data());
   attachment.data_len = attachment_data.size();
 
   auto error = writer->attach(attachment);
@@ -684,7 +684,7 @@ TEST_CASE("Write multiple attachments to MCAP") {
   config_attachment.create_time = 900000000;
   config_attachment.name = "config.yaml";
   config_attachment.media_type = "application/yaml";
-  config_attachment.data = reinterpret_cast<const std::byte*>(config_data.data());
+  config_attachment.data = reinterpret_cast<const unsigned char*>(config_data.data());
   config_attachment.data_len = config_data.size();
 
   auto error1 = writer->attach(config_attachment);
@@ -697,7 +697,7 @@ TEST_CASE("Write multiple attachments to MCAP") {
   calibration_attachment.create_time = 1800000000;
   calibration_attachment.name = "calibration.bin";
   calibration_attachment.media_type = "application/octet-stream";
-  calibration_attachment.data = reinterpret_cast<const std::byte*>(calibration_data.data());
+  calibration_attachment.data = reinterpret_cast<const unsigned char*>(calibration_data.data());
   calibration_attachment.data_len = calibration_data.size();
 
   auto error2 = writer->attach(calibration_attachment);

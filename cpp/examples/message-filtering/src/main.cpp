@@ -61,20 +61,20 @@ PointCloud make_point_cloud(const std::chrono::duration<double>& elapsed) {
   }
 
   // Pack data into bytes
-  std::vector<std::byte> buffer;
+  std::vector<unsigned char> buffer;
   for (const auto& [x, y, z, r, g, b, a] : points) {
-    const std::byte* x_bytes = reinterpret_cast<const std::byte*>(&x);
-    const std::byte* y_bytes = reinterpret_cast<const std::byte*>(&y);
-    const std::byte* z_bytes = reinterpret_cast<const std::byte*>(&z);
+    const unsigned char* x_bytes = reinterpret_cast<const unsigned char*>(&x);
+    const unsigned char* y_bytes = reinterpret_cast<const unsigned char*>(&y);
+    const unsigned char* z_bytes = reinterpret_cast<const unsigned char*>(&z);
 
     buffer.insert(buffer.end(), x_bytes, x_bytes + sizeof(float));
     buffer.insert(buffer.end(), y_bytes, y_bytes + sizeof(float));
     buffer.insert(buffer.end(), z_bytes, z_bytes + sizeof(float));
 
-    buffer.push_back(static_cast<std::byte>(r));
-    buffer.push_back(static_cast<std::byte>(g));
-    buffer.push_back(static_cast<std::byte>(b));
-    buffer.push_back(static_cast<std::byte>(a));
+    buffer.push_back(static_cast<unsigned char>(r));
+    buffer.push_back(static_cast<unsigned char>(g));
+    buffer.push_back(static_cast<unsigned char>(b));
+    buffer.push_back(static_cast<unsigned char>(a));
   }
 
   // https://docs.foxglove.dev/docs/visualization/message-schemas/packed-element-field
@@ -248,7 +248,7 @@ int main() {
     const std::string info_msg = "{\"state\": \"" + state + "\"}";
     const auto timestamp = std::chrono::nanoseconds(now.time_since_epoch()).count();
     info_channel.log(
-      reinterpret_cast<const std::byte*>(info_msg.data()), info_msg.size(), timestamp
+      reinterpret_cast<const unsigned char*>(info_msg.data()), info_msg.size(), timestamp
     );
 
     // Generate and log point cloud
