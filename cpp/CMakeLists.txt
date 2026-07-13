@@ -131,6 +131,15 @@ corrosion_import_crate(
   CRATES foxglove_c
   FLAGS ${SANITIZER_CARGO_FLAGS}
 )
+if(DEFINED FOXGLOVE_BINDGEN_EXTRA_CLANG_ARGS AND NOT FOXGLOVE_BINDGEN_EXTRA_CLANG_ARGS STREQUAL "")
+  corrosion_set_env_vars(foxglove "BINDGEN_EXTRA_CLANG_ARGS=${FOXGLOVE_BINDGEN_EXTRA_CLANG_ARGS}")
+endif()
+if(DEFINED FOXGLOVE_RUST_LINKER AND NOT FOXGLOVE_RUST_LINKER STREQUAL "")
+  corrosion_set_linker(foxglove "${FOXGLOVE_RUST_LINKER}")
+endif()
+if(DEFINED FOXGLOVE_RUST_LIBRARY_PATH AND NOT FOXGLOVE_RUST_LIBRARY_PATH STREQUAL "")
+  corrosion_set_env_vars(foxglove "LIBRARY_PATH=${FOXGLOVE_RUST_LIBRARY_PATH}:$ENV{LIBRARY_PATH}")
+endif()
 if(DEFINED SANITIZE)
   # Rust does not have flags for certain sanitizers so we strip them out
   string(REGEX REPLACE undefined "" rust_sanitizers ${SANITIZE})
